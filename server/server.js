@@ -6,6 +6,7 @@ const session = require("express-session");
 const MongoStore = require('connect-mongo');
 const basicRoutes = require("./routes/index");
 const authRoutes = require("./routes/auth");
+const eventRoutes = require('./routes/events');
 const cors = require("cors");
 
 if (!process.env.DATABASE_URL) {
@@ -48,6 +49,8 @@ app.on("error", (error) => {
 app.use(basicRoutes);
 // Authentication Routes
 app.use('/api/auth', authRoutes);
+// Event routes
+app.use('/api/events', eventRoutes);
 
 // If no routes handled the request, it's a 404
 app.use((req, res, next) => {
