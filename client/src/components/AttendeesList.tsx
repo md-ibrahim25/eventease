@@ -25,7 +25,11 @@ import {
 
 type AttendeesListProps = {
   eventId: string;
-  attendees: string[];
+  attendees: Array<{
+    _id: string;
+    name: string;
+    email: string;
+  }>;
   onUpdate: () => void;
 };
 
@@ -78,14 +82,14 @@ export function AttendeesList({ eventId, attendees, onUpdate }: AttendeesListPro
           </TableHeader>
           <TableBody>
             {attendees.map((attendee) => (
-              <TableRow key={attendee}>
-                <TableCell>{attendee}</TableCell>
+              <TableRow key={attendee._id}>
+                <TableCell>{attendee.name}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                      setAttendeeToDelete(attendee);
+                      setAttendeeToDelete(attendee._id);
                       setDeleteDialogOpen(true);
                     }}
                   >
@@ -99,6 +103,7 @@ export function AttendeesList({ eventId, attendees, onUpdate }: AttendeesListPro
       </div>
 
       <AttendeeDialog
+        eventId={eventId}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSuccess={onUpdate}

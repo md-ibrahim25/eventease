@@ -45,7 +45,7 @@ export function EventDialog({ event, open, onOpenChange, onSuccess }: EventDialo
     console.log('Form submitted with data:', data);
     try {
       if (event) {
-        await updateEvent(event.id, data)
+        await updateEvent(event._id, data)
       } else {
         await createEvent({ ...data, attendees: [], tasks: [] })
       }
@@ -55,12 +55,12 @@ export function EventDialog({ event, open, onOpenChange, onSuccess }: EventDialo
       })
       onSuccess()
       onOpenChange(false)
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error in form submission:', error);
       toast({
-        variant: "destructive",
+        variant: "destructive", 
         title: "Error",
-        description: `Failed to ${event ? 'update' : 'create'} event`,
+        description: error.message || `Failed to ${event ? 'update' : 'create'} event`,
       })
     }
   }

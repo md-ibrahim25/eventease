@@ -37,38 +37,14 @@ export const getEvents = async () => {
 // Get single event
 // GET /api/events/:id
 // Response: { event: Event }
-export const getEvent = (id: string) => {
-  return new Promise<{ event: Event }>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        event: {
-          id: '1',
-          name: 'Company Anniversary',
-          description: 'Annual company celebration',
-          location: 'Central Hall',
-          date: '2024-04-15',
-          image: 'https://images.unsplash.com/photo-1511578314322-379afb476865',
-          attendees: ['John Doe', 'Jane Smith'],
-          tasks: [
-            {
-              id: '1',
-              name: 'Book venue',
-              deadline: '2024-03-15',
-              status: 'completed',
-              assignedTo: 'John Doe'
-            },
-            {
-              id: '2',
-              name: 'Order catering',
-              deadline: '2024-04-01',
-              status: 'pending',
-              assignedTo: 'Jane Smith'
-            }
-          ]
-        }
-      });
-    }, 500);
-  });
+export const getEvent = async (id: string) => {
+  try {
+    const response = await api.get<Event>(`/api/events/${id}`);
+    return { event: response.data };
+  } catch (error) {
+    console.error('Error fetching event:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Create event
@@ -91,30 +67,25 @@ export const createEvent = async (data: Omit<Event, 'id'>) => {
 // PUT /api/events/:id
 // Request: Partial<Event>
 // Response: Event
-export const updateEvent = (id: string, data: Partial<Event>) => {
-  return new Promise<Event>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id,
-        name: data.name || '',
-        description: data.description || '',
-        location: data.location || '',
-        date: data.date || '',
-        image: data.image || '',
-        attendees: data.attendees || [],
-        tasks: data.tasks || []
-      });
-    }, 500);
-  });
+export const updateEvent = async (id: string, data: Partial<Event>) => {
+  try {
+    const response = await api.put<Event>(`/api/events/${id}`, data);
+    return response.data;
+  } catch (error) {
+    console.error('Error updating event:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Delete event
 // DELETE /api/events/:id
 // Response: { success: boolean }
-export const deleteEvent = (id: string) => {
-  return new Promise<{ success: boolean }>((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true });
-    }, 500);
-  });
+export const deleteEvent = async (id: string) => {
+  try {
+    const response = await api.delete(`/api/events/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };

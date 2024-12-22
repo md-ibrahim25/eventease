@@ -14,6 +14,7 @@ import { createAttendee, type Attendee } from "@/api/attendees"
 import { useToast } from "@/hooks/useToast"
 
 type AttendeeDialogProps = {
+  eventId: string
   open: boolean
   onOpenChange: (open: boolean) => void
   onSuccess: () => void
@@ -24,13 +25,13 @@ type FormData = {
   email: string
 }
 
-export function AttendeeDialog({ open, onOpenChange, onSuccess }: AttendeeDialogProps) {
+export function AttendeeDialog({ eventId, open, onOpenChange, onSuccess }: AttendeeDialogProps) {
   const { toast } = useToast()
   const { register, handleSubmit, formState: { isSubmitting } } = useForm<FormData>()
 
   const onSubmit = async (data: FormData) => {
     try {
-      await createAttendee(data)
+      await createAttendee(eventId, data)
       toast({
         title: "Success",
         description: "Attendee added successfully",
@@ -41,7 +42,7 @@ export function AttendeeDialog({ open, onOpenChange, onSuccess }: AttendeeDialog
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to add attendee",
+        description: error.message,
       })
     }
   }

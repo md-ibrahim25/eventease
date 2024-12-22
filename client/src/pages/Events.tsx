@@ -56,9 +56,9 @@ export function Events() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {events.map((event) => (
           <Card
-            key={event.id}
+            key={event._id}
             className="group relative overflow-hidden transition-all hover:shadow-lg cursor-pointer"
-            onClick={() => navigate(`/events/${event.id}`)}
+            onClick={() => navigate(`/events/${event._id}`)}
           >
             <div className="aspect-[16/9] relative">
               <img

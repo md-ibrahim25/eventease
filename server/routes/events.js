@@ -35,4 +35,37 @@ router.get('/', requireUser, async (req, res) => {
   }
 });
 
+// Get event by ID
+router.get('/:id', requireUser, async (req, res) => {
+  try {
+    const event = await eventService.getEvent(req.params.id);
+    res.status(200).json(event);
+  } catch (error) {
+    logger.error('Error fetching event:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Update event by ID
+router.put('/:id', requireUser, async (req, res) => {
+  try {
+    const event = await eventService.updateEvent(req.params.id, req.body);
+    res.status(200).json(event);
+  } catch (error) {
+    logger.error('Error updating event:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete event by ID
+router.delete('/:id', requireUser, async (req, res) => {
+  try {
+    const result = await eventService.deleteEvent(req.params.id);
+    res.status(200).json(result);
+  } catch (error) {
+    logger.error('Error deleting event:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;

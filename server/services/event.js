@@ -40,7 +40,7 @@ const listEvents = async () => {
     const events = await Event.find()
       .populate('attendees', 'name email')
       .populate('tasks.assignedTo', 'name email');
-    
+
     logger.info(`Retrieved ${events.length} events`);
     return events;
   } catch (error) {
@@ -91,10 +91,37 @@ const deleteEvent = async (id) => {
   }
 };
 
+const addAttendeeToEvent = async (eventId, attendeeData) => {
+  try {
+    logger.debug(`Adding attendee to event ${eventId}:`, attendeeData);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Add attendee to the event
+    event.attendees.push(attendeeData);
+    await event.save();
+
+    // Return populated event
+    const updatedEvent = await Event.findById(eventId)
+      .populate('attendees', 'name email')
+      .populate('tasks.assignedTo', 'name email');
+
+    logger.info(`Added attendee to event ${eventId}`);
+    return updatedEvent;
+  } catch (error) {
+    logger.error('Error adding attendee:', { error: error.stack });
+    throw error;
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
   listEvents,
   updateEvent,
-  deleteEvent
+  deleteEvent,
+  addAttendeeToEvent
 };

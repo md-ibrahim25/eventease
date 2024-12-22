@@ -31,18 +31,16 @@ export const getAttendees = () => {
 };
 
 // Create attendee
-// POST /api/attendees
+// POST /api/attendees/:eventId 
 // Request: Omit<Attendee, 'id'>
-// Response: Attendee
-export const createAttendee = (data: Omit<Attendee, 'id'>) => {
-  return new Promise<Attendee>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: Math.random().toString(),
-        ...data
-      });
-    }, 500);
-  });
+// Response: Event with updated attendees
+export const createAttendee = async (eventId: string, data: Omit<Attendee, 'id'>) => {
+  try {
+    const response = await api.post(`/api/attendees/${eventId}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Delete attendee

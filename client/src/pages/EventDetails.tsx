@@ -32,17 +32,26 @@ export function EventDetails() {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const fetchEvent = async () => {
-    if (!id) return;
+    if (!id) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Event ID is required",
+      });
+      navigate("/events");
+      return;
+    }
 
     try {
       setLoading(true);
       const response = await getEvent(id);
       setEvent(response.event);
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error fetching event details:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch event details",
+        description: error.message || "Failed to fetch event details",
       });
       navigate("/events");
     } finally {
@@ -55,7 +64,14 @@ export function EventDetails() {
   }, [id]);
 
   const handleDelete = async () => {
-    if (!id) return;
+    if (!id) {
+      toast({
+        variant: "destructive",
+        title: "Error", 
+        description: "Event ID is required",
+      });
+      return;
+    }
 
     try {
       await deleteEvent(id);
@@ -64,11 +80,12 @@ export function EventDetails() {
         description: "Event deleted successfully",
       });
       navigate("/events");
-    } catch (error) {
+    } catch (error: any) {
+      console.error("Error deleting event:", error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to delete event",
+        description: error.message || "Failed to delete event",
       });
     }
   };
