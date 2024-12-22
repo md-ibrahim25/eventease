@@ -22,58 +22,16 @@ export type Task = {
 // Get all events
 // GET /api/events
 // Response: { events: Event[] }
-export const getEvents = () => {
-  return new Promise<{ events: Event[] }>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        events: [
-          {
-            id: '1',
-            name: 'Company Anniversary',
-            description: 'Annual company celebration',
-            location: 'Central Hall',
-            date: '2024-04-15',
-            image: 'https://images.unsplash.com/photo-1511578314322-379afb476865',
-            attendees: ['John Doe', 'Jane Smith'],
-            tasks: [
-              {
-                id: '1',
-                name: 'Book venue',
-                deadline: '2024-03-15',
-                status: 'completed',
-                assignedTo: 'John Doe'
-              },
-              {
-                id: '2',
-                name: 'Order catering',
-                deadline: '2024-04-01',
-                status: 'pending',
-                assignedTo: 'Jane Smith'
-              }
-            ]
-          },
-          {
-            id: '2',
-            name: 'Product Launch',
-            description: 'New product line announcement',
-            location: 'Convention Center',
-            date: '2024-05-20',
-            image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2',
-            attendees: ['John Doe', 'Jane Smith'],
-            tasks: [
-              {
-                id: '3',
-                name: 'Prepare presentation',
-                deadline: '2024-05-10',
-                status: 'pending',
-                assignedTo: 'John Doe'
-              }
-            ]
-          }
-        ]
-      });
-    }, 500);
-  });
+export const getEvents = async () => {
+  console.log('Fetching events from API');
+  try {
+    const response = await api.get<Event[]>('/api/events');
+    console.log('Received events from API:', response.data);
+    return { events: response.data };
+  } catch (error) {
+    console.error('Error fetching events:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Get single event
@@ -117,15 +75,16 @@ export const getEvent = (id: string) => {
 // POST /api/events
 // Request: Omit<Event, 'id'>
 // Response: Event
-export const createEvent = (data: Omit<Event, 'id'>) => {
-  return new Promise<Event>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: Math.random().toString(),
-        ...data
-      });
-    }, 500);
-  });
+export const createEvent = async (data: Omit<Event, 'id'>) => {
+  console.log('Attempting to create event with data:', data);
+  try {
+    const response = await api.post<Event>('/api/events', data);
+    console.log('Server response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error creating event:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Update event

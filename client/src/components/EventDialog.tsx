@@ -42,6 +42,7 @@ export function EventDialog({ event, open, onOpenChange, onSuccess }: EventDialo
   })
 
   const onSubmit = async (data: FormData) => {
+    console.log('Form submitted with data:', data);
     try {
       if (event) {
         await updateEvent(event.id, data)
@@ -55,6 +56,7 @@ export function EventDialog({ event, open, onOpenChange, onSuccess }: EventDialo
       onSuccess()
       onOpenChange(false)
     } catch (error) {
+      console.error('Error in form submission:', error);
       toast({
         variant: "destructive",
         title: "Error",

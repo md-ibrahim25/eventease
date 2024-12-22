@@ -6,6 +6,8 @@ const logger = require('../utils/log')('eventRoutes');
 
 // Create a new event
 router.post('/', requireUser, async (req, res) => {
+  console.log('Received event creation request with body:', req.body);
+  console.log('User making request:', req.user);
   try {
     const eventData = {
       ...req.body,
@@ -17,7 +19,18 @@ router.post('/', requireUser, async (req, res) => {
     logger.info(`Event created with id: ${event._id}`);
     res.status(201).json(event);
   } catch (error) {
-    logger.error('Error in create event route:', error);
+    console.error('Detailed error in create event route:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Get all events
+router.get('/', requireUser, async (req, res) => {
+  try {
+    const events = await eventService.listEvents();
+    res.status(200).json(events);
+  } catch (error) {
+    logger.error('Error fetching events:', error);
     res.status(400).json({ error: error.message });
   }
 });
