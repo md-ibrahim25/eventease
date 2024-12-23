@@ -173,7 +173,7 @@ export function EventDetails() {
             <AttendeesList eventId={id} attendees={event.attendees} onUpdate={fetchEvent} />
           </TabsContent>
           <TabsContent value="tasks" className="mt-6">
-            <TasksList eventId={id} tasks={event.tasks} onUpdate={fetchEvent} />
+            <TasksList eventId={id} tasks={event.tasks} onUpdate={fetchEvent} attendees={event.attendees} />
           </TabsContent>
         </Tabs>
       </Card>

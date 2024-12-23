@@ -38,9 +38,15 @@ export const createTask = async (eventId: string, data: Omit<Task, 'id'>) => {
 // Response: Task
 export const updateTask = async (eventId: string, taskId: string, data: Partial<Task>) => {
   try {
-    const response = await api.put(`/api/events/${eventId}/tasks/${taskId}`, data);
+    console.log('Updating task with data:', data);
+    const response = await api.put(`/api/events/${eventId}/tasks/${taskId}`, {
+      ...data,
+      assignedTo: data.assignedTo?._id || data.assignedTo
+    });
+    console.log('Update task response:', response.data);
     return response.data;
   } catch (error) {
+    console.error('Error updating task:', error);
     throw new Error(error?.response?.data?.error || error.message);
   }
 };

@@ -58,10 +58,10 @@ app.use('/api/events', attendeeRoutes);
 // Task routes
 app.use('/api/events', tasksRouter);
 
-console.log('Registered routes:', app._router.stack.filter(r => r.route).map(r => ({
-  path: r.route.path,
-  methods: Object.keys(r.route.methods)
-})));
+// Log all registered routes
+console.log('All registered routes:', app._router.stack
+  .filter(r => r.route)
+  .map(r => `${Object.keys(r.route.methods)} ${r.route.path}`));
 
 // If no routes handled the request, it's a 404
 app.use((req, res, next) => {

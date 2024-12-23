@@ -36,9 +36,20 @@ export const createAttendee = async (eventId: string, data: { name: string; emai
 // Response: Event with updated attendees
 export const deleteAttendee = async (eventId: string, attendeeId: string) => {
   try {
-    const response = await api.delete(`/api/attendees/${eventId}/${attendeeId}`);
+    console.log('Attempting to delete attendee:', {
+      url: `/api/events/${eventId}/attendees/${attendeeId}`,
+      eventId,
+      attendeeId
+    });
+    const response = await api.delete(`/api/events/${eventId}/attendees/${attendeeId}`);
+    console.log('Delete attendee response:', response.data);
     return response.data;
   } catch (error) {
+    console.error('Delete attendee error:', {
+      status: error.response?.status,
+      data: error.response?.data,
+      message: error.message
+    });
     throw new Error(error?.response?.data?.error || error.message);
   }
 };

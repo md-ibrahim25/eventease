@@ -4,6 +4,10 @@ const { requireUser } = require('./middleware/auth');
 const eventService = require('../services/event');
 const logger = require('../utils/log')('eventRoutes');
 
+console.log('Registering event routes, including:', [
+  'DELETE /api/events/:eventId/attendees/:attendeeId'
+]);
+
 // Create a new event
 router.post('/', requireUser, async (req, res) => {
   console.log('Received event creation request with body:', req.body);
@@ -78,6 +82,21 @@ router.post('/:eventId/attendees', requireUser, async (req, res) => {
     res.status(201).json(updatedEvent);
   } catch (error) {
     console.error('Error adding attendee:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
+// Delete attendee from event
+router.delete('/:eventId/attendees/:attendeeId', requireUser, async (req, res) => {
+  console.log('DELETE attendee route hit:', {
+    eventId: req.params.eventId,
+    attendeeId: req.params.attendeeId
+  });
+  try {
+    const result = await eventService.removeAttendeeFromEvent(req.params.eventId, req.params.attendeeId);
+    res.status(200).json(result);
+  } catch (error) {
+    logger.error('Error deleting attendee:', error);
     res.status(400).json({ error: error.message });
   }
 });

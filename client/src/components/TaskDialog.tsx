@@ -45,7 +45,7 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
     defaultValues: task ? {
       name: task.name,
       deadline: task.deadline,
-      assignedTo: task.assignedTo,
+      assignedTo: task.assignedTo?._id || task.assignedTo
     } : undefined
   })
 
@@ -74,13 +74,16 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
   const onSubmit = async (data: FormData) => {
     try {
       if (task) {
+        console.log('Updating task with data:', data);
         await updateTask(eventId, task.id, {
           ...data,
+          assignedTo: data.assignedTo,
           status: task.status
-        })
+        });
       } else {
         await createTask(eventId, {
           ...data,
+          assignedTo: data.assignedTo,
           status: 'pending'
         })
       }
@@ -91,10 +94,11 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
       onSuccess()
       onOpenChange(false)
     } catch (error) {
+      console.error('Error in task dialog:', error);
       toast({
         variant: "destructive",
         title: "Error",
-        description: `Failed to ${task ? 'update' : 'add'} task`,
+        description: error.message || `Failed to ${task ? 'update' : 'add'} task`,
       })
     }
   }
@@ -142,7 +146,7 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
                       </SelectTrigger>
                       <SelectContent>
                         {attendees.map((attendee) => (
-                          <SelectItem key={attendee.id} value={attendee.name}>
+                          <SelectItem key={attendee._id} value={attendee._id}>
                             {attendee.name}
                           </SelectItem>
                         ))}

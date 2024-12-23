@@ -36,9 +36,10 @@ type TasksListProps = {
   eventId: string;
   tasks: Task[];
   onUpdate: () => void;
+  attendees: Array<{ _id: string, name: string }>;
 };
 
-export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
+export function TasksList({ eventId, tasks, onUpdate, attendees }: TasksListProps) {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -158,14 +159,23 @@ export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
                   </DropdownMenu>
                 </TableCell>
                 <TableCell>{task.name}</TableCell>
-                <TableCell>{task.assignedTo}</TableCell>
+                <TableCell>
+                  {task.assignedTo ? (
+                    attendees.find(a => a._id === task.assignedTo)?.name || 'Unknown'
+                  ) : (
+                    'Unassigned'
+                  )}
+                </TableCell>
                 <TableCell>{format(new Date(task.deadline), 'PP')}</TableCell>
                 <TableCell className="text-right">
                   <Button
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                      setSelectedTask(task);
+                      setSelectedTask({
+                        ...task,
+                        id: task._id
+                      });
                       setDialogOpen(true);
                     }}
                     className="mr-2"

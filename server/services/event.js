@@ -18,8 +18,11 @@ const getEvent = async (id) => {
   try {
     logger.debug(`Getting event with id: ${id}`);
     const event = await Event.findById(id)
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
+      .populate('attendees')
+      .populate({
+        path: 'tasks.assignedTo',
+        select: 'name email'
+      });
 
     if (!event) {
       logger.warn(`Event not found with id: ${id}`);
@@ -38,8 +41,11 @@ const listEvents = async () => {
   try {
     logger.debug('Listing all events');
     const events = await Event.find()
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
+      .populate('attendees')
+      .populate({
+        path: 'tasks.assignedTo',
+        select: 'name email'
+      });
 
     logger.info(`Retrieved ${events.length} events`);
     return events;
@@ -57,8 +63,11 @@ const updateEvent = async (id, updateData) => {
       updateData,
       { new: true, runValidators: true }
     )
-    .populate('attendees', 'name email')
-    .populate('tasks.assignedTo', 'name email');
+    .populate('attendees')
+    .populate({
+      path: 'tasks.assignedTo',
+      select: 'name email'
+    });
 
     if (!event) {
       logger.warn(`Event not found with id: ${id}`);
@@ -106,8 +115,11 @@ const addAttendeeToEvent = async (eventId, attendeeData) => {
 
     // Return populated event
     const updatedEvent = await Event.findById(eventId)
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
+      .populate('attendees')
+      .populate({
+        path: 'tasks.assignedTo',
+        select: 'name email'
+      });
 
     logger.info(`Added attendee to event ${eventId}`);
     return updatedEvent;
@@ -134,8 +146,11 @@ const removeAttendeeFromEvent = async (eventId, attendeeId) => {
 
     // Return populated event
     const updatedEvent = await Event.findById(eventId)
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
+      .populate('attendees')
+      .populate({
+        path: 'tasks.assignedTo',
+        select: 'name email'
+      });
 
     logger.info(`Removed attendee ${attendeeId} from event ${eventId}`);
     return updatedEvent;
@@ -160,8 +175,11 @@ const addTaskToEvent = async (eventId, taskData) => {
 
     // Return populated event
     const updatedEvent = await Event.findById(eventId)
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
+      .populate('attendees')
+      .populate({
+        path: 'tasks.assignedTo',
+        select: 'name email'
+      });
 
     logger.info(`Added task to event ${eventId}`);
     return updatedEvent;
@@ -175,31 +193,26 @@ const updateTaskInEvent = async (eventId, taskId, taskData) => {
   try {
     logger.debug(`Updating task ${taskId} in event ${eventId}:`, taskData);
 
-    const event = await Event.findById(eventId);
+    const event = await Event.findOneAndUpdate(
+      { _id: eventId, "tasks._id": taskId },
+      {
+        $set: {
+          "tasks.$.name": taskData.name,
+          "tasks.$.deadline": taskData.deadline,
+          "tasks.$.status": taskData.status,
+          "tasks.$.assignedTo": taskData.assignedTo
+        }
+      },
+      { new: true }
+    ).populate('tasks.assignedTo');
+
     if (!event) {
-      throw new Error('Event not found');
+      throw new Error('Event or task not found');
     }
 
-    // Find the task index
-    const taskIndex = event.tasks.findIndex(
-      task => task._id.toString() === taskId
-    );
-
-    if (taskIndex === -1) {
-      throw new Error('Task not found');
-    }
-
-    // Update the task
-    Object.assign(event.tasks[taskIndex], taskData);
-    await event.save();
-
-    // Return populated event
-    const updatedEvent = await Event.findById(eventId)
-      .populate('attendees', 'name email')
-      .populate('tasks.assignedTo', 'name email');
-
+    const updatedTask = event.tasks.find(t => t._id.toString() === taskId);
     logger.info(`Updated task ${taskId} in event ${eventId}`);
-    return updatedEvent.tasks[taskIndex];
+    return updatedTask;
   } catch (error) {
     logger.error('Error updating task:', { error: error.stack });
     throw error;
