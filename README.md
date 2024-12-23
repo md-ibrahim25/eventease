@@ -1,77 +1,91 @@
 ```markdown
 # EventEase
 
-EventEase is a comprehensive web-based Event Management Dashboard designed to streamline the process of organizing and managing events. It includes features such as user authentication, event management, attendee management, task tracking, and real-time updates. The application is built with a responsive design to ensure a seamless user experience on both desktop and mobile devices.
+EventEase is a web-based Event Management Dashboard designed to streamline the organization and management of events. It provides features for user authentication, event and attendee management, task tracking, and real-time updates. The application is built with a modern tech stack including ReactJS for the frontend and Express.js for the backend, ensuring a responsive and dynamic user experience.
 
 ## Overview
 
-EventEase is developed using a modern tech stack comprising ReactJS for the frontend and Express.js for the backend. The frontend is built with Vite as the development server and styled using Tailwind CSS with the Shadcn-UI component library. The backend leverages MongoDB for data storage and JWT for secure user authentication. The application supports real-time updates using WebSockets.
+EventEase is structured into two main parts: the frontend and the backend.
+
+### Architecture and Technologies
+
+- **Frontend**: Built with ReactJS and Vite, using the shadcn-ui component library and Tailwind CSS for styling. Client-side routing is handled by `react-router-dom`.
+- **Backend**: Implemented with Express.js, providing REST API endpoints. MongoDB is used for database management with Mongoose for object modeling. Authentication is handled using JWT tokens.
+- **Real-Time Updates**: WebSockets (e.g., Socket.IO) are used to ensure real-time data synchronization across all users.
+- **Responsive Design**: The dashboard is designed to be fully functional and user-friendly on both desktop and mobile devices.
 
 ### Project Structure
 
 - **Frontend**: Located in the `client/` directory.
-  - **Tech Stack**: ReactJS, Vite, Tailwind CSS, Shadcn-UI, Axios, React Router.
-  - **Folder Structure**:
-    - `client/src/pages/`: Contains page components (e.g., `Login`, `Register`, `Events`, `Calendar`).
-    - `client/src/components/`: Contains reusable UI components (e.g., `Button`, `Input`, `Modal`).
-    - `client/src/api/`: Contains API request functions with mock data for frontend testing.
-    - `client/src/contexts/`: Context providers for global state management (e.g., `AuthContext`).
-    - `client/src/hooks/`: Custom hooks for additional functionalities (e.g., `useToast`, `useIsMobile`).
-
+  - `client/src/pages/`: Contains page components like Home, Login, Register, Events, Attendees, Tasks, and Calendar.
+  - `client/src/components/`: Contains reusable UI components.
+  - `client/src/api/`: Contains API request functions.
 - **Backend**: Located in the `server/` directory.
-  - **Tech Stack**: Express.js, MongoDB, Mongoose, JWT, WebSockets.
-  - **Folder Structure**:
-    - `server/models/`: Mongoose models for defining database schemas (e.g., `User`, `Event`).
-    - `server/routes/`: Express routes for handling API requests (e.g., `auth.js`, `events.js`, `attendees.js`).
-    - `server/services/`: Business logic for handling data operations (e.g., `user.js`, `event.js`).
-    - `server/utils/`: Utility functions for common tasks (e.g., `auth.js`, `log.js`, `password.js`).
+  - `server/routes/`: Contains route definitions for authentication, events, attendees, and tasks.
+  - `server/models/`: Contains Mongoose schemas for Event and User.
+  - `server/services/`: Contains service logic for handling business operations.
+  - `server/utils/`: Contains utility functions for logging, authentication, and password management.
 
 ## Features
 
-- **User Authentication**: Secure JWT-based authentication for user registration and login.
-- **Event Management**: Create, view, edit, and delete events with details such as name, description, location, date, attendees, and tasks.
-- **Attendee Management**: Add and delete attendees, assign them to specific events or tasks.
-- **Task Tracker**: Add, view, delete, and update tasks associated with events, with fields such as name, deadline, status, and assigned attendee. A progress bar visualizes task completion for each event.
-- **Calendar View**: Visual representation of events on a calendar, with clickable events for detailed view or editing.
-- **Real-Time Updates**: Dynamic reflection of changes to events, tasks, or attendees for all users using WebSockets.
-- **Responsive Design**: Fully functional and user-friendly on both desktop and mobile devices.
+- **User Authentication**: Secure registration and login using JWT-based authentication.
+- **Event Management**: Create, view, edit, and delete events with details like name, description, location, date, attendees, and tasks.
+- **Attendee Management**: Add and delete attendees, and assign them to events or tasks.
+- **Task Tracker**: Manage tasks associated with events, including adding, viewing, deleting, and updating tasks. Visualize task completion with a progress bar.
+- **Calendar View**: Display events on a calendar, with clickable events to view or edit details.
+- **Real-Time Updates**: Dynamic reflection of changes to events, tasks, or attendees for all users.
+- **Responsive Design**: Optimized for both desktop and mobile devices.
 
 ## Getting Started
 
 ### Requirements
 
-- Node.js (v14 or higher)
-- npm (v6 or higher)
-- MongoDB (v4 or higher)
+To run EventEase, you need to have the following technologies installed on your computer:
+
+- Node.js (v14.x or later)
+- npm (v6.x or later)
+- MongoDB (v4.x or later)
 
 ### Quickstart
 
-1. **Clone the repository**:
-    ```sh
-    git clone https://github.com/yourusername/eventease.git
-    cd eventease
+Follow these steps to set up and run the project:
+
+1. **Clone the Repository**:
+    ```bash
+    git clone <repository-url>
+    cd EventEase
     ```
 
-2. **Set up the backend**:
-    ```sh
-    cd server
-    cp .env.example .env
-    # Update the .env file with your MongoDB URL and JWT secrets
-    npm install
-    npm run dev
-    ```
+2. **Install Dependencies**:
+    - For the backend:
+        ```bash
+        cd server
+        npm install
+        ```
+    - For the frontend:
+        ```bash
+        cd client
+        npm install
+        ```
 
-3. **Set up the frontend**:
-    ```sh
-    cd client
-    npm install
-    npm run dev
-    ```
+3. **Set Up Environment Variables**:
+    - Create a `.env` file in the `server/` directory with the following variables:
+        ```
+        PORT=3000
+        MONGODB_URI=<your-mongodb-uri>
+        JWT_SECRET=<your-jwt-secret>
+        ```
 
-4. **Access the application**:
-    Open your browser and navigate to `http://localhost:5173` to start using EventEase.
+4. **Run the Application**:
+    - Start both the frontend and backend using Concurrently:
+        ```bash
+        npm run start
+        ```
+
+5. **Access the Application**:
+    - Open your browser and navigate to `http://localhost:5173` to access the EventEase dashboard.
 
 ### License
 
-The project is proprietary (not open source). Copyright (c) 2024.
+The project is proprietary (not open source), Copyright (c) 2024.
 ```

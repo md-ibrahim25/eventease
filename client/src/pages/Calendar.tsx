@@ -6,6 +6,7 @@ import { getEvents, type Event } from '@/api/events';
 import { useToast } from '@/hooks/useToast';
 import { EventDialog } from '@/components/EventDialog';
 import { Loading } from '@/components/Loading';
+import { format } from 'date-fns';
 
 export function Calendar() {
   const [events, setEvents] = useState<Event[]>([]);
@@ -23,7 +24,7 @@ export function Calendar() {
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to fetch events",
+        description: error instanceof Error ? error.message : "Failed to fetch events",
       });
     } finally {
       setLoading(false);
@@ -41,13 +42,23 @@ export function Calendar() {
   const calendarEvents = events.map(event => ({
     id: event.id,
     title: event.name,
-    date: event.date,
-    extendedProps: event,
+    start: new Date(event.date),
+    end: new Date(event.date),
+    extendedProps: {
+      description: event.description,
+      location: event.location,
+      attendees: event.attendees,
+      tasks: event.tasks,
+    },
+    allDay: true,
   }));
 
   const handleEventClick = (info: any) => {
-    setSelectedEvent(info.event.extendedProps);
-    setDialogOpen(true);
+    const event = events.find(e => e.id === info.event.id);
+    if (event) {
+      setSelectedEvent(event);
+      setDialogOpen(true);
+    }
   };
 
   return (
@@ -65,6 +76,14 @@ export function Calendar() {
             center: 'title',
             right: 'dayGridMonth,dayGridWeek'
           }}
+          eventContent={(arg) => (
+            <div className="p-1">
+              <div className="font-semibold">{arg.event.title}</div>
+              <div className="text-sm text-muted-foreground">
+                {arg.event.extendedProps.location}
+              </div>
+            </div>
+          )}
         />
       </div>
       {selectedEvent && (
