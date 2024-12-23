@@ -95,10 +95,3 @@ To run the project locally, you need to have the following installed on your sys
 5. **Access the application**:
     - Open your browser and navigate to `http://localhost:5173` to use the EventEase dashboard.
 
-### License
-
-The project is proprietary (not open source). 
-
-```
-Copyright (c) 2024.
-```
