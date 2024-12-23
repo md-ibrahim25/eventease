@@ -19,14 +19,15 @@ export const getAttendees = async (eventId: string) => {
 };
 
 // Create attendee
-// POST /api/attendees/:eventId
+// POST /api/events/:eventId/attendees
 // Request: Omit<Attendee, 'id'>
 // Response: Event with updated attendees
-export const createAttendee = async (eventId: string, data: Omit<Attendee, 'id'>) => {
+export const createAttendee = async (eventId: string, data: { name: string; email: string }) => {
   try {
-    const response = await api.post(`/api/attendees/${eventId}`, data);
+    const response = await api.post<Attendee>(`/api/events/${eventId}/attendees`, data);
     return response.data;
   } catch (error) {
+    console.error('Error creating attendee:', error);
     throw new Error(error?.response?.data?.error || error.message);
   }
 };

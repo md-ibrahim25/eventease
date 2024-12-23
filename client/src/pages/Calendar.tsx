@@ -1,18 +1,17 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import { getEvents, type Event } from '@/api/events';
 import { useToast } from '@/hooks/useToast';
-import { EventDialog } from '@/components/EventDialog';
 import { Loading } from '@/components/Loading';
 import { format } from 'date-fns';
 
 export function Calendar() {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const navigate = useNavigate();
   const { toast } = useToast();
 
   const fetchEvents = async () => {
@@ -40,7 +39,7 @@ export function Calendar() {
   }
 
   const calendarEvents = events.map(event => ({
-    id: event.id,
+    id: event._id,
     title: event.name,
     start: new Date(event.date),
     end: new Date(event.date),
@@ -54,11 +53,7 @@ export function Calendar() {
   }));
 
   const handleEventClick = (info: any) => {
-    const event = events.find(e => e.id === info.event.id);
-    if (event) {
-      setSelectedEvent(event);
-      setDialogOpen(true);
-    }
+    navigate(`/events/${info.event.id}`);
   };
 
   return (
@@ -86,14 +81,6 @@ export function Calendar() {
           )}
         />
       </div>
-      {selectedEvent && (
-        <EventDialog
-          event={selectedEvent}
-          open={dialogOpen}
-          onOpenChange={setDialogOpen}
-          onSuccess={fetchEvents}
-        />
-      )}
     </div>
   );
 }

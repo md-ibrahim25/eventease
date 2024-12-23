@@ -67,7 +67,7 @@ export function EventDetails() {
     if (!id) {
       toast({
         variant: "destructive",
-        title: "Error", 
+        title: "Error",
         description: "Event ID is required",
       });
       return;
@@ -148,11 +148,17 @@ export function EventDetails() {
             </div>
           </div>
           <div className="aspect-[16/9] relative rounded-lg overflow-hidden">
-            <img
-              src={event.image}
-              alt={event.name}
-              className="object-cover w-full h-full"
-            />
+            {event.image ? (
+              <img
+                src={event.image}
+                alt={event.name}
+                className="object-cover w-full h-full"
+              />
+            ) : (
+              <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-400">No image available</span>
+              </div>
+            )}
           </div>
         </div>
       </Card>

@@ -68,4 +68,18 @@ router.delete('/:id', requireUser, async (req, res) => {
   }
 });
 
+// Add attendee to event
+router.post('/:eventId/attendees', requireUser, async (req, res) => {
+  const { eventId } = req.params;
+  const { name, email } = req.body;
+
+  try {
+    const updatedEvent = await eventService.addAttendeeToEvent(eventId, { name, email });
+    res.status(201).json(updatedEvent);
+  } catch (error) {
+    console.error('Error adding attendee:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;
