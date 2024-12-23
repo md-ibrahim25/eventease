@@ -48,10 +48,11 @@ export const updateTask = async (eventId: string, taskId: string, data: Partial<
 // Delete task
 // DELETE /api/events/:eventId/tasks/:taskId
 // Response: { success: boolean }
-export const deleteTask = (eventId: string, taskId: string) => {
-  return new Promise<{ success: boolean }>((resolve) => {
-    setTimeout(() => {
-      resolve({ success: true });
-    }, 500);
-  });
+export const deleteTask = async (eventId: string, taskId: string) => {
+  try {
+    const response = await api.delete(`/api/events/${eventId}/tasks/${taskId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };

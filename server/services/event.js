@@ -206,6 +206,36 @@ const updateTaskInEvent = async (eventId, taskId, taskData) => {
   }
 };
 
+const deleteTaskFromEvent = async (eventId, taskId) => {
+  try {
+    logger.debug(`Deleting task ${taskId} from event ${eventId}`);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Find the task index
+    const taskIndex = event.tasks.findIndex(
+      task => task._id.toString() === taskId
+    );
+
+    if (taskIndex === -1) {
+      throw new Error('Task not found');
+    }
+
+    // Remove the task
+    event.tasks.splice(taskIndex, 1);
+    await event.save();
+
+    logger.info(`Deleted task ${taskId} from event ${eventId}`);
+    return { success: true };
+  } catch (error) {
+    logger.error('Error deleting task:', { error: error.stack });
+    throw error;
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
@@ -215,5 +245,6 @@ module.exports = {
   addAttendeeToEvent,
   removeAttendeeFromEvent,
   addTaskToEvent,
-  updateTaskInEvent
+  updateTaskInEvent,
+  deleteTaskFromEvent
 };

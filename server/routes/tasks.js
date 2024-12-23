@@ -69,4 +69,23 @@ router.put('/:eventId/tasks/:taskId', requireUser, async (req, res) => {
   }
 });
 
+// Delete a task from an event
+router.delete('/:eventId/tasks/:taskId', requireUser, async (req, res) => {
+  console.log('DELETE /api/events/:eventId/tasks/:taskId route hit');
+  console.log('Request params:', req.params);
+
+  try {
+    const { eventId, taskId } = req.params;
+
+    logger.debug(`Deleting task ${taskId} from event ${eventId}`);
+    const result = await eventService.deleteTaskFromEvent(eventId, taskId);
+
+    logger.info(`Task ${taskId} deleted from event ${eventId}`);
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Error deleting task:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;
