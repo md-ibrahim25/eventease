@@ -1,5 +1,5 @@
 ```markdown
-# EventEase
+#EventEase
 
 EventEase is a web-based Event Management Dashboard designed to streamline the organization and management of events. It provides features for user authentication, event and attendee management, task tracking, and real-time updates. The application is built with a modern tech stack including ReactJS for the frontend and Express.js for the backend, ensuring a responsive and dynamic user experience.
 
