@@ -4,44 +4,32 @@ import type { Task } from './events';
 // Get tasks for event
 // GET /api/events/:eventId/tasks
 // Response: { tasks: Task[] }
-export const getEventTasks = (eventId: string) => {
-  return new Promise<{ tasks: Task[] }>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        tasks: [
-          {
-            id: '1',
-            name: 'Book venue',
-            deadline: '2024-03-15',
-            status: 'completed',
-            assignedTo: 'John Doe'
-          },
-          {
-            id: '2',
-            name: 'Order catering',
-            deadline: '2024-04-01',
-            status: 'pending',
-            assignedTo: 'Jane Smith'
-          }
-        ]
-      });
-    }, 500);
-  });
+export const getEventTasks = async (eventId: string) => {
+  console.log(`Making GET request to /api/events/${eventId}/tasks`);
+  try {
+    const response = await api.get(`/api/events/${eventId}/tasks`);
+    console.log('Response from getEventTasks:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in getEventTasks:', error);
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Create task
 // POST /api/events/:eventId/tasks
 // Request: Omit<Task, 'id'>
 // Response: Task
-export const createTask = (eventId: string, data: Omit<Task, 'id'>) => {
-  return new Promise<Task>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: Math.random().toString(),
-        ...data
-      });
-    }, 500);
-  });
+export const createTask = async (eventId: string, data: Omit<Task, 'id'>) => {
+  try {
+    const response = await api.post(`/api/events/${eventId}/tasks`, {
+      ...data,
+      assignedTo: data.assignedTo._id
+    });
+    return response.data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Update task

@@ -8,6 +8,7 @@ const basicRoutes = require("./routes/index");
 const authRoutes = require("./routes/auth");
 const eventRoutes = require('./routes/events');
 const attendeeRoutes = require('./routes/attendees');
+const tasksRouter = require('./routes/tasks');
 const cors = require("cors");
 
 if (!process.env.DATABASE_URL) {
@@ -53,7 +54,14 @@ app.use('/api/auth', authRoutes);
 // Event routes
 app.use('/api/events', eventRoutes);
 // Attendee routes
-app.use('/api/attendees', attendeeRoutes);
+app.use('/api/events', attendeeRoutes);
+// Task routes
+app.use('/api/events', tasksRouter);
+
+console.log('Registered routes:', app._router.stack.filter(r => r.route).map(r => ({
+  path: r.route.path,
+  methods: Object.keys(r.route.methods)
+})));
 
 // If no routes handled the request, it's a 404
 app.use((req, res, next) => {

@@ -53,7 +53,7 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
     const fetchAttendees = async () => {
       try {
         setLoading(true)
-        const response = await getAttendees()
+        const response = await getAttendees(eventId)
         setAttendees(response.attendees)
       } catch (error) {
         toast({
@@ -69,7 +69,7 @@ export function TaskDialog({ eventId, task, open, onOpenChange, onSuccess }: Tas
     if (open) {
       fetchAttendees()
     }
-  }, [open, toast])
+  }, [open, toast, eventId])
 
   const onSubmit = async (data: FormData) => {
     try {

@@ -43,7 +43,7 @@ export function AttendeesList({ eventId, attendees, onUpdate }: AttendeesListPro
     if (!attendeeToDelete) return;
 
     try {
-      await deleteAttendee(attendeeToDelete);
+      await deleteAttendee(eventId, attendeeToDelete);
       toast({
         title: "Success",
         description: "Attendee removed successfully",
@@ -53,7 +53,7 @@ export function AttendeesList({ eventId, attendees, onUpdate }: AttendeesListPro
       toast({
         variant: "destructive",
         title: "Error",
-        description: "Failed to remove attendee",
+        description: error.message,
       });
     }
     setAttendeeToDelete(null);

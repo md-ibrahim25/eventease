@@ -117,11 +117,67 @@ const addAttendeeToEvent = async (eventId, attendeeData) => {
   }
 };
 
+const removeAttendeeFromEvent = async (eventId, attendeeId) => {
+  try {
+    logger.debug(`Removing attendee ${attendeeId} from event ${eventId}`);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Remove attendee from the event
+    event.attendees = event.attendees.filter(
+      attendee => attendee._id.toString() !== attendeeId
+    );
+    await event.save();
+
+    // Return populated event
+    const updatedEvent = await Event.findById(eventId)
+      .populate('attendees', 'name email')
+      .populate('tasks.assignedTo', 'name email');
+
+    logger.info(`Removed attendee ${attendeeId} from event ${eventId}`);
+    return updatedEvent;
+  } catch (error) {
+    logger.error('Error removing attendee:', { error: error.stack });
+    throw error;
+  }
+};
+
+const addTaskToEvent = async (eventId, taskData) => {
+  try {
+    logger.debug(`Adding task to event ${eventId}:`, taskData);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Add task to the event
+    event.tasks.push(taskData);
+    await event.save();
+
+    // Return populated event
+    const updatedEvent = await Event.findById(eventId)
+      .populate('attendees', 'name email')
+      .populate('tasks.assignedTo', 'name email');
+
+    logger.info(`Added task to event ${eventId}`);
+    return updatedEvent;
+  } catch (error) {
+    logger.error('Error adding task:', { error: error.stack });
+    throw error;
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
   listEvents,
   updateEvent,
   deleteEvent,
-  addAttendeeToEvent
+  addAttendeeToEvent,
+  removeAttendeeFromEvent,
+  addTaskToEvent
 };
