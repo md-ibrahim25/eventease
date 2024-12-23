@@ -36,18 +36,13 @@ export const createTask = async (eventId: string, data: Omit<Task, 'id'>) => {
 // PUT /api/events/:eventId/tasks/:taskId
 // Request: Partial<Task>
 // Response: Task
-export const updateTask = (eventId: string, taskId: string, data: Partial<Task>) => {
-  return new Promise<Task>((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id: taskId,
-        name: data.name || '',
-        deadline: data.deadline || '',
-        status: data.status || 'pending',
-        assignedTo: data.assignedTo || ''
-      });
-    }, 500);
-  });
+export const updateTask = async (eventId: string, taskId: string, data: Partial<Task>) => {
+  try {
+    const response = await api.put(`/api/events/${eventId}/tasks/${taskId}`, data);
+    return response.data;
+  } catch (error) {
+    throw new Error(error?.response?.data?.error || error.message);
+  }
 };
 
 // Delete task

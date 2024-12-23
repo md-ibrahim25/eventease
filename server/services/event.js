@@ -171,6 +171,41 @@ const addTaskToEvent = async (eventId, taskData) => {
   }
 };
 
+const updateTaskInEvent = async (eventId, taskId, taskData) => {
+  try {
+    logger.debug(`Updating task ${taskId} in event ${eventId}:`, taskData);
+
+    const event = await Event.findById(eventId);
+    if (!event) {
+      throw new Error('Event not found');
+    }
+
+    // Find the task index
+    const taskIndex = event.tasks.findIndex(
+      task => task._id.toString() === taskId
+    );
+
+    if (taskIndex === -1) {
+      throw new Error('Task not found');
+    }
+
+    // Update the task
+    Object.assign(event.tasks[taskIndex], taskData);
+    await event.save();
+
+    // Return populated event
+    const updatedEvent = await Event.findById(eventId)
+      .populate('attendees', 'name email')
+      .populate('tasks.assignedTo', 'name email');
+
+    logger.info(`Updated task ${taskId} in event ${eventId}`);
+    return updatedEvent.tasks[taskIndex];
+  } catch (error) {
+    logger.error('Error updating task:', { error: error.stack });
+    throw error;
+  }
+};
+
 module.exports = {
   createEvent,
   getEvent,
@@ -179,5 +214,6 @@ module.exports = {
   deleteEvent,
   addAttendeeToEvent,
   removeAttendeeFromEvent,
-  addTaskToEvent
+  addTaskToEvent,
+  updateTaskInEvent
 };

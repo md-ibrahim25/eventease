@@ -48,4 +48,25 @@ router.get('/:eventId/tasks', requireUser, async (req, res) => {
   }
 });
 
+// Update a task in an event
+router.put('/:eventId/tasks/:taskId', requireUser, async (req, res) => {
+  console.log('PUT /api/events/:eventId/tasks/:taskId route hit');
+  console.log('Request params:', req.params);
+  console.log('Request body:', req.body);
+
+  try {
+    const { eventId, taskId } = req.params;
+    const taskData = req.body;
+
+    logger.debug(`Updating task ${taskId} in event ${eventId}:`, taskData);
+    const updatedTask = await eventService.updateTaskInEvent(eventId, taskId, taskData);
+
+    logger.info(`Task ${taskId} updated in event ${eventId}`);
+    res.json(updatedTask);
+  } catch (error) {
+    logger.error('Error updating task:', error);
+    res.status(400).json({ error: error.message });
+  }
+});
+
 module.exports = router;

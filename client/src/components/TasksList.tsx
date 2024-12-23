@@ -49,9 +49,9 @@ export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
   const completedTasks = tasks.filter(task => task.status === 'completed').length;
   const progressPercentage = tasks.length > 0 ? (completedTasks / tasks.length) * 100 : 0;
 
-  const handleStatusChange = async (taskId: string, status: 'pending' | 'completed') => {
+  const handleStatusChange = async (task: Task, status: 'pending' | 'completed') => {
     try {
-      await updateTask(eventId, taskId, { status });
+      await updateTask(eventId, task._id, { status });
       toast({
         title: "Success",
         description: "Task status updated successfully",
@@ -129,7 +129,7 @@ export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
           </TableHeader>
           <TableBody>
             {tasks.map((task) => (
-              <TableRow key={task.id}>
+              <TableRow key={task._id}>
                 <TableCell>
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
@@ -143,13 +143,13 @@ export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="start">
                       <DropdownMenuItem
-                        onClick={() => handleStatusChange(task.id, 'pending')}
+                        onClick={() => handleStatusChange(task, 'pending')}
                       >
                         <Circle className="h-4 w-4 mr-2 text-yellow-500" />
                         Pending
                       </DropdownMenuItem>
                       <DropdownMenuItem
-                        onClick={() => handleStatusChange(task.id, 'completed')}
+                        onClick={() => handleStatusChange(task, 'completed')}
                       >
                         <CheckCircle2 className="h-4 w-4 mr-2 text-green-500" />
                         Completed
@@ -176,7 +176,7 @@ export function TasksList({ eventId, tasks, onUpdate }: TasksListProps) {
                     variant="ghost"
                     size="icon"
                     onClick={() => {
-                      setTaskToDelete(task.id);
+                      setTaskToDelete(task._id);
                       setDeleteDialogOpen(true);
                     }}
                   >
